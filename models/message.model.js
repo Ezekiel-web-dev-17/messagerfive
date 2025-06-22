@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+// import react from "../../client/public/vite.svg";
 
 const messagesModel = new mongoose.Schema(
   {
@@ -8,12 +9,25 @@ const messagesModel = new mongoose.Schema(
       required: true,
     },
 
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+    participants: {
+      type: Array,
       required: true,
-      index: true,
+      minLength: 2,
     },
+
+    // chatName: {
+    //   type: String,
+    //   minLength: 2,
+    // },
+
+    // lastMessage: {
+    //   type: String,
+    // },
+
+    // avatarUrl: {
+    //   type: String,
+    //   default: react,
+    // },
   },
   { timestamps: true }
 );

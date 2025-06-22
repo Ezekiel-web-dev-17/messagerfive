@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Message from "../models/message.model.js";
 
 export const getMessages = async (req, res, next) => {
@@ -13,37 +14,47 @@ export const getMessages = async (req, res, next) => {
   }
 };
 
-export const getUserMessages = async (req, res, next) => {
-  try {
-    if (req.user.id != req.params.id) {
-      const err = new Error("you are not the owner of this account");
-      err.status = 401;
-      throw err;
-    }
+// export const getUserMessages = async (req, res, next) => {
+//   try {
+//     if (req.user.id != req.params.id) {
+//       const err = new Error("You are not the owner of this account");
+//       err.statusCode = 401;
+//       throw err;
+//     }
 
-    const userMessages = await Message.find({ user: req.params.id });
+//     const userMessages = await Message.find({ user: req.params.id });
 
-    res.status(200).json({
-      success: true,
-      data: userMessages,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.status(200).json({
+//       success: true,
+//       data: userMessages,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 export const createMessages = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
+    const { text, participants } = req.body;
     const message = await Message.create({
-      ...req.body,
-      user: req.user._id,
+      text,
+      participants,
     });
+
+    session.commitTransaction();
+    session.endSession();
 
     res.status(201).json({
       success: true,
+      message: "Message sent successfully.",
       data: message,
     });
   } catch (e) {
+    await session.abortTransaction();
+    session.endSession();
     next(e);
   }
 };
@@ -68,14 +79,13 @@ export const editMessage = async (req, res, next) => {
   }
 };
 
-export const deleteMesage = async (req, res, next) => {
+export const deleteMessage = async (req, res, next) => {
   try {
     const userMessage = await Message.findByIdAndDelete(req.params.id);
 
     res.status(204).json({
       success: true,
       message: "Message deleted successfully",
-      userId: req.user.id,
       messageId: req.params.id,
     });
   } catch (error) {
