@@ -3,7 +3,7 @@ import Message from "../models/message.model.js";
 
 export const getMessages = async (req, res, next) => {
   try {
-    const messages = await Message.find();
+    const messages = await Message.find().select("-password");
 
     res.status(200).json({
       success: true,
@@ -13,25 +13,6 @@ export const getMessages = async (req, res, next) => {
     next(error);
   }
 };
-
-// export const getUserMessages = async (req, res, next) => {
-//   try {
-//     if (req.user.id != req.params.id) {
-//       const err = new Error("You are not the owner of this account");
-//       err.statusCode = 401;
-//       throw err;
-//     }
-
-//     const userMessages = await Message.find({ user: req.params.id });
-
-//     res.status(200).json({
-//       success: true,
-//       data: userMessages,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 
 export const createMessages = async (req, res, next) => {
   const session = await mongoose.startSession();
