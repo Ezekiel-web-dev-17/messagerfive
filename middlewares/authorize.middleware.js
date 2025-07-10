@@ -15,7 +15,7 @@ const authorize = async (req, res, next) => {
 
     if (!token) {
       return res.status(401).json({
-        message: "Unauthorized!",
+        message: "Unauthorized! no token provided.",
       });
     }
 
@@ -25,7 +25,7 @@ const authorize = async (req, res, next) => {
 
     if (!user) {
       return res.status(401).json({
-        message: "Unauthorized!",
+        message: "Unauthorized! User not found.",
       });
     }
 
@@ -34,7 +34,7 @@ const authorize = async (req, res, next) => {
     next();
   } catch (error) {
     res.status(401).json({
-      message: "Unauthorized!",
+      message: "Unauthorized! Invalid token.",
       error: error.message,
     });
 

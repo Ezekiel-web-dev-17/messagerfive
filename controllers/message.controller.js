@@ -3,7 +3,7 @@ import Message from "../models/message.model.js";
 
 export const getMessages = async (req, res, next) => {
   try {
-    const messages = await Message.find().select("-password");
+    const messages = await Message.find();
 
     res.status(200).json({
       success: true,
